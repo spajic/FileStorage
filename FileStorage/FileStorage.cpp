@@ -4,7 +4,3 @@
 #include "stdafx.h"
 
 #include "FileStorage.h"
-
-int Trivial::ReturnOne() {
-	return 1;
-}
