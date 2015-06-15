@@ -15,6 +15,7 @@
 
 #include "FileStorage\FileStorage.h"
 #include "FileStorage\RamFileStorage.h"
+#include "FileStorage\FileUtils.h"
 
 using std::string;
 using std::vector;
@@ -36,6 +37,29 @@ using std::vector;
 //		.Times(::testing::AtLeast(1));
 //	Turtle.PenDown();
 //}
+
+TEST(FIleUtilsTest, CanReadFileToVectorOfChars) {
+	vector<char> generated_chars{ 't', 'e', 's', 't', ' ', 'u', 't', 'i', 'l', 's'};
+	const string generated_file_path = "testutils.bin";
+	std::ofstream generated_file(generated_file_path, std::ios::binary);
+	for (char b : generated_chars) {
+		generated_file << b;
+	}
+	std::ifstream retreived_file(generated_file_path, std::ios::binary);
+	vector<char> retreived_chars;
+	std::copy(
+		std::istreambuf_iterator<char>(retreived_file),
+		std::istreambuf_iterator<char>(),
+		retreived_chars.begin()
+		);
+
+	ASSERT_EQ(generated_chars.size(), retreived_chars.size());
+	EXPECT_EQ(true,
+		std::equal(
+		generated_chars.begin(), generated_chars.end(), retreived_chars.begin()
+		)
+	);
+}
 
 TEST(RamFileStorageTest, CanCreateClass) {
 	RamFileStorage fs;
@@ -109,7 +133,7 @@ TEST(RamFileStorageRetreiveTest, RetreivesFileExectlyAsItWasStored) {
 	vector<BYTE> generated_bytes{ 'H', 'e', 'l', 'l', 'o' };
 	const string generated_file_path = "generated.bin";
 	const string generated_file_name = "generated";
-	std::ofstream generated_file(generated_file_name, std::ios::binary);
+	std::ofstream generated_file(generated_file_path, std::ios::binary);
 	for (char b : generated_bytes) {
 		generated_file << b;
 	}

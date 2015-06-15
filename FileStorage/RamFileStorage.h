@@ -2,6 +2,8 @@
 
 #include "FileStorage.h"
 
+#include <map>
+
 class RamFileStorage : public FileStorage {
 public:
 	RamFileStorage();
@@ -10,4 +12,7 @@ public:
 	void RemoveFile(string name);
 	bool HasFile(string name);
 	std::vector<string> GetFileNamesList();
+private:
+	typedef char BYTE;
+	std::map < string, BYTE > ram_storage;
 };
