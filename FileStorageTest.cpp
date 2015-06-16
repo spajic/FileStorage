@@ -38,21 +38,17 @@ using std::vector;
 //	Turtle.PenDown();
 //}
 
-TEST(FIleUtilsTest, CanReadFileToVectorOfChars) {
-	vector<char> generated_chars{ 't', 'e', 's', 't', ' ', 'u', 't', 'i', 'l', 's'};
-	const string generated_file_path = "testutils.bin";
+TEST(FileUtilsTest, CanReadFileToVectorOfChars) {
+	vector<char> generated_chars{'t', 'e', 's', 't', ' ', 'u', 't', 'i', 'l', 's' };
+	const string generated_file_path = "FileUtilsTest.bin";
 	std::ofstream generated_file(generated_file_path, std::ios::binary);
 	for (char b : generated_chars) {
 		generated_file << b;
 	}
-	std::ifstream retreived_file(generated_file_path, std::ios::binary);
-	vector<char> retreived_chars;
-	std::copy(
-		std::istreambuf_iterator<char>(retreived_file),
-		std::istreambuf_iterator<char>(),
-		retreived_chars.begin()
-		);
+	generated_file.close();
 
+	vector<char> retreived_chars;
+	FileUtils::ReadFileToVectorOfChars(generated_file_path, &retreived_chars);
 	ASSERT_EQ(generated_chars.size(), retreived_chars.size());
 	EXPECT_EQ(true,
 		std::equal(

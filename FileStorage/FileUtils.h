@@ -4,5 +4,5 @@
 #include <vector>
 
 namespace FileUtils {
-	void ReadFileToVectorOfChars(const std::string file_name, std::vector<char> &v);
+	void ReadFileToVectorOfChars(const std::string file_name, std::vector<char> *v);
 }
