@@ -29,7 +29,9 @@ void RamFileStorage::RetreiveFile(string name, string store_to) {
 
 std::vector<string> RamFileStorage::GetFileNamesList() {
 	std::vector<string> result;
-	result.push_back("hello");
+	for (auto &elem : ram_storage) {
+		result.push_back(elem.first);
+	}
 	return result;
 }
 
