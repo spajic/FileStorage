@@ -42,7 +42,7 @@ const string kTempPath = "tests_temp\\";
 
 TEST(FileUtilsTest, CanReadFileToVectorOfChars) {
 	vector<char> generated_chars{'t', 'e', 's', 't', ' ', 'u', 't', 'i', 'l', 's' };
-	const string generated_file_path = "FileUtilsTest.bin";
+	const string generated_file_path = kTempPath + "FileUtilsTest.bin";
 	std::ofstream generated_file(generated_file_path, std::ios::binary);
 	for (char b : generated_chars) {
 		generated_file << b;
@@ -56,7 +56,7 @@ TEST(FileUtilsTest, CanReadFileToVectorOfChars) {
 
 TEST(FileUtilsTest, CanWriteVectorOfCharsToFile) {
 	vector<char> generated_chars{ 't', 'e', 's', 't', ' ', 'u', 't', 'i', 'l', 's' };
-	string written_file_name = "FileUtilsWriteVectorOfCharsTest.bin";
+	string written_file_name = kTempPath + "FileUtilsWriteVectorOfCharsTest.bin";
 	FileUtils::WriteVectorOfCharsToFile(written_file_name, generated_chars);
 	vector<char> read_chars;
 	FileUtils::ReadFileToVectorOfChars(written_file_name, &read_chars);
@@ -119,17 +119,17 @@ TEST(RamFileStorageGetFileNamesLitsTest, ReturnsCorrectListForSomeStoredFiles) {
 TEST(RamFileStorageRetreiveTest, NoThrowForAbsentFile) {
 	RamFileStorage fs;
 	EXPECT_NO_THROW({
-		fs.RetreiveFile("absent file name", "fake_path");
+		fs.RetreiveFile("absent file name", kTempPath + "fake_path.bin");
 	});
 }
 
 TEST(RamFileStorageRetreiveTest, RetreivesFileExectlyAsItWasStored) {
 	RamFileStorage fs;
 	vector<char> generated_bytes{ 'H', 'e', 'l', 'l', 'o', 'F', 'S'};
-	const string generated_file_path = "generated.bin";
+	const string generated_file_path = kTempPath + "generated.bin";
 	const string generated_file_name = "generated";
 	FileUtils::WriteVectorOfCharsToFile(generated_file_path, generated_bytes);
-	const string retreived_file_path = "retreived.bin";
+	const string retreived_file_path = kTempPath + "retreived.bin";
 	vector<char> retreived_bytes;
 
 	fs.StoreFile(generated_file_name, generated_file_path);
