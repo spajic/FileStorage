@@ -128,10 +128,12 @@ TEST(RamFileStorageRetreiveTest, RetreivesFileExectlyAsItWasStored) {
 	const string generated_file_name = "generated";
 	FileUtils::WriteVectorOfCharsToFile(generated_file_path, generated_bytes);
 	const string retreived_file_path = "retreived.bin";
-	fs.RetreiveFile(generated_file_name, retreived_file_path);
 	vector<char> retreived_bytes;
+
+	fs.StoreFile(generated_file_name, generated_file_path);
+	fs.RetreiveFile(generated_file_name, retreived_file_path);
+	
 	FileUtils::ReadFileToVectorOfChars(retreived_file_path, &retreived_bytes);
-		
 	ASSERT_EQ(true, generated_bytes == retreived_bytes);
 }
 

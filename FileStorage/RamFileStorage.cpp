@@ -24,7 +24,7 @@ void RamFileStorage::RemoveFile(string name) {
 }
 
 void RamFileStorage::RetreiveFile(string name, string store_to) {
-
+	FileUtils::WriteVectorOfCharsToFile(store_to, ram_storage[name]);
 }
 
 std::vector<string> RamFileStorage::GetFileNamesList() {
