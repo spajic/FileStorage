@@ -16,6 +16,7 @@
 
 #include "FileStorage\FileStorage.h"
 #include "FileStorage\RamFileStorage.h"
+#include "FileStorage\SqliteFileStorage.h"
 #include "FileStorage\FileUtils.h"
 
 using std::string;
@@ -61,13 +62,16 @@ protected:
 
 	virtual void SetUp() {
 		string fs_impl = GetParam();
-		if(fs_impl == "RamFileStorage") {
+		if(fs_impl == "Ram") {
 			fs = std::unique_ptr<FileStorage>(new RamFileStorage);
+		}
+		else if(fs_impl == "Sqlite") {
+			fs = std::unique_ptr<FileStorage>(new SqliteFileStorage);
 		}
 	}
 };
 
-const string fs_implementations[] = {"RamFileStorage"};
+const string fs_implementations[] = {"Ram", "Sqlite"};
 INSTANTIATE_TEST_CASE_P(TestFileStorageImpls,
 												FileStorageTest,
 												::testing::ValuesIn(fs_implementations)
