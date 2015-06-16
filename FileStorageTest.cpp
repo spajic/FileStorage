@@ -54,7 +54,7 @@ TEST(RamFileStorageTest, CanCreateClass) {
 	RamFileStorage fs;
 }
 
-//------------------- Value-parametrized tests for FileStorage ----------
+//------------------- Setup Value-parametrized tests for FileStorage ----------
 class FileStorageTest : public ::testing::TestWithParam<string> {
 protected:
 	std::unique_ptr<FileStorage> fs;
@@ -109,27 +109,24 @@ TEST_P(FileStorageTest, GetFileNamesLitsReturnsEmptyListWhenNothingStored) {
 	EXPECT_EQ(0, results.size());
 }
 
-TEST(RamFileStorageGetFileNamesLitsTest, ReturnsCorrectListForSomeStoredFiles) {
-	RamFileStorage fs;
+TEST_P(FileStorageTest, GetFileNamesLitsReturnsCorrectListForSomeStoredFiles) {
 	string fake_path = "fake path";
 	static const string arr[] = {"file1", "file2", "file3"};
 	vector<string> names_to_store(arr, arr + sizeof(arr) / sizeof(arr[0]) );
 	for (auto name : names_to_store)	{
-		fs.StoreFile(name, fake_path);
+		fs->StoreFile(name, fake_path);
 	}
-	vector<string> result_names_list = fs.GetFileNamesList();
+	vector<string> result_names_list = fs->GetFileNamesList();
 	ASSERT_EQ(true, names_to_store == result_names_list);
 }
 
-TEST(RamFileStorageRetreiveTest, NoThrowForAbsentFile) {
-	RamFileStorage fs;
+TEST_P(FileStorageTest, RetreiveNoThrowForAbsentFile) {
 	EXPECT_NO_THROW({
-		fs.RetreiveFile("absent file name", kTempPath + "fake_path.bin");
+		fs->RetreiveFile("absent file name", kTempPath + "fake_path.bin");
 	});
 }
 
-TEST(RamFileStorageRetreiveTest, RetreivesFileExectlyAsItWasStored) {
-	RamFileStorage fs;
+TEST_P(FileStorageTest, RetreivesFileExectlyAsItWasStored) {
 	static const char arr[] = { 'H', 'e', 'l', 'l', 'o', 'F', 'S'};
 	vector<char> generated_bytes(arr, arr + sizeof(arr) / sizeof(arr[0]) );
 	const string generated_file_path = kTempPath + "generated.bin";
@@ -138,20 +135,19 @@ TEST(RamFileStorageRetreiveTest, RetreivesFileExectlyAsItWasStored) {
 	const string retreived_file_path = kTempPath + "retreived.bin";
 	vector<char> retreived_bytes;
 
-	fs.StoreFile(generated_file_name, generated_file_path);
-	fs.RetreiveFile(generated_file_name, retreived_file_path);
+	fs->StoreFile(generated_file_name, generated_file_path);
+	fs->RetreiveFile(generated_file_name, retreived_file_path);
 
 	FileUtils::ReadFileToVectorOfChars(retreived_file_path, &retreived_bytes);
 	ASSERT_EQ(true, generated_bytes == retreived_bytes);
 }
 
-TEST(RamFileStorageTest, StoresAndRetreivesRealFile) {
-	RamFileStorage fs;
+TEST_P(FileStorageTest, StoresAndRetreivesRealFile) {
 	string real_file_path = kTempPath + "pic.jpg";
 	string retreive_path = kTempPath + "retreived_pic.jpg";
 	string real_file_name = "pic";
-	fs.StoreFile(real_file_name, real_file_path);
-	fs.RetreiveFile(real_file_name, retreive_path);
+	fs->StoreFile(real_file_name, real_file_path);
+	fs->RetreiveFile(real_file_name, retreive_path);
 
 	vector<char> stored_chars;
 	FileUtils::ReadFileToVectorOfChars(real_file_path, &stored_chars);
