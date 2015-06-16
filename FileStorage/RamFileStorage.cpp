@@ -20,7 +20,7 @@ bool RamFileStorage::HasFile(string name) {
 }
 
 void RamFileStorage::RemoveFile(string name) {
-
+	ram_storage.erase(name);
 }
 
 void RamFileStorage::RetreiveFile(string name, string store_to) {
