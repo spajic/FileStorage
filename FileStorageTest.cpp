@@ -47,6 +47,27 @@ TEST(FileUtilsTest, CanWriteVectorOfCharsToFile) {
 	ASSERT_EQ(true, generated_chars == read_chars);
 }
 
+
+
+class AbstractFileStorageTest : public ::testing::TestWithParam<FileStorage*> {
+	// You can implement all the usual fixture class members here.
+	// To access the test parameter, call GetParam() from class
+	// TestWithParam<T>.
+};
+
+TEST_P(AbstractFileStorageTest, ReturnsFalseForAbsentFile) {
+	FileStorage *fs = GetParam();
+	EXPECT_EQ(false, fs->HasFile("any name"));
+}
+
+RamFileStorage rfs;
+FileStorage *fs_ram = &rfs;
+
+INSTANTIATE_TEST_CASE_P(TestFileStorageImplementations,
+												AbstractFileStorageTest,
+												::testing::Values(fs_ram)
+);
+
 TEST(RamFileStorageTest, CanCreateClass) {
 	RamFileStorage fs;
 }
