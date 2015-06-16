@@ -23,7 +23,8 @@ using std::vector;
 const string kTempPath = "tests_temp\\";
 
 TEST(FileUtilsTest, CanReadFileToVectorOfChars) {
-	vector<char> generated_chars{'t', 'e', 's', 't', ' ', 'u', 't', 'i', 'l', 's' };
+	static const char arr[] = {'t', 'e', 's', 't', ' ', 'u', 't', 'i', 'l', 's' };
+	vector<char> generated_chars(arr, arr + sizeof(arr) / sizeof(arr[0]) );
 	const string generated_file_path = kTempPath + "FileUtilsTest.bin";
 	std::ofstream generated_file(generated_file_path, std::ios::binary);
 	for (char b : generated_chars) {
@@ -37,7 +38,8 @@ TEST(FileUtilsTest, CanReadFileToVectorOfChars) {
 }
 
 TEST(FileUtilsTest, CanWriteVectorOfCharsToFile) {
-	vector<char> generated_chars{ 't', 'e', 's', 't', ' ', 'u', 't', 'i', 'l', 's' };
+	static const char arr[] = {'t', 'e', 's', 't', ' ', 'u', 't', 'i', 'l', 's' };
+	vector<char> generated_chars(arr, arr + sizeof(arr) / sizeof(arr[0]) );
 	string written_file_name = kTempPath + "FileUtilsWriteVectorOfCharsTest.bin";
 	FileUtils::WriteVectorOfCharsToFile(written_file_name, generated_chars);
 	vector<char> read_chars;
@@ -90,7 +92,8 @@ TEST(RamFileStorageGetFileNamesLitsTest, ReturnsEmptyListWhenNothingStored) {
 TEST(RamFileStorageGetFileNamesLitsTest, ReturnsCorrectListForSomeStoredFiles) {
 	RamFileStorage fs;
 	string fake_path = "fake path";
-	vector<string> names_to_store{"file1", "file2", "file3"};
+	static const string arr[] = {"file1", "file2", "file3"};
+	vector<string> names_to_store(arr, arr + sizeof(arr) / sizeof(arr[0]) );
 	for (auto name : names_to_store)	{
 		fs.StoreFile(name, fake_path);
 	}
@@ -107,7 +110,8 @@ TEST(RamFileStorageRetreiveTest, NoThrowForAbsentFile) {
 
 TEST(RamFileStorageRetreiveTest, RetreivesFileExectlyAsItWasStored) {
 	RamFileStorage fs;
-	vector<char> generated_bytes{ 'H', 'e', 'l', 'l', 'o', 'F', 'S'};
+	static const char arr[] = { 'H', 'e', 'l', 'l', 'o', 'F', 'S'};
+	vector<char> generated_bytes(arr, arr + sizeof(arr) / sizeof(arr[0]) );
 	const string generated_file_path = kTempPath + "generated.bin";
 	const string generated_file_name = "generated";
 	FileUtils::WriteVectorOfCharsToFile(generated_file_path, generated_bytes);
