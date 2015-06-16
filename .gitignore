@@ -198,3 +198,4 @@ FakesAssemblies/
 /testutils.bin
 /generated.bin
 /FileUtilsTest.bin
+/FileUtilsWriteVectorOfCharsTest.bin

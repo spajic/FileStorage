@@ -19,6 +19,11 @@ namespace FileUtils {
 	}
 
 	void WriteVectorOfCharsToFile(const std::string file_name, std::vector<char> *v){
-		return;
+		std::ofstream f(file_name, std::ios::binary);
+		if (!f.bad()) {
+			for (auto &ch : *v) {
+				f << ch;
+			}
+		}		
 	}
 }
