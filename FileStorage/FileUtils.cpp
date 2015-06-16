@@ -18,10 +18,10 @@ namespace FileUtils {
 		);		
 	}
 
-	void WriteVectorOfCharsToFile(const std::string file_name, std::vector<char> *v){
+	void WriteVectorOfCharsToFile(const std::string file_name, const std::vector<char> &v){
 		std::ofstream f(file_name, std::ios::binary);
 		if (!f.bad()) {
-			for (auto &ch : *v) {
+			for (auto &ch : v) {
 				f << ch;
 			}
 		}		

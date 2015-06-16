@@ -55,7 +55,7 @@ TEST(FileUtilsTest, CanReadFileToVectorOfChars) {
 TEST(FileUtilsTest, CanWriteVectorOfCharsToFile) {
 	vector<char> generated_chars{ 't', 'e', 's', 't', ' ', 'u', 't', 'i', 'l', 's' };
 	string written_file_name = "FileUtilsWriteVectorOfCharsTest.bin";
-	FileUtils::WriteVectorOfCharsToFile(written_file_name, &generated_chars);
+	FileUtils::WriteVectorOfCharsToFile(written_file_name, generated_chars);
 	vector<char> read_chars;
 	FileUtils::ReadFileToVectorOfChars(written_file_name, &read_chars);
 	ASSERT_EQ(true, generated_chars == read_chars);
@@ -126,7 +126,7 @@ TEST(RamFileStorageRetreiveTest, RetreivesFileExectlyAsItWasStored) {
 	vector<char> generated_bytes{ 'H', 'e', 'l', 'l', 'o', 'F', 'S'};
 	const string generated_file_path = "generated.bin";
 	const string generated_file_name = "generated";
-	FileUtils::WriteVectorOfCharsToFile(generated_file_path, &generated_bytes);
+	FileUtils::WriteVectorOfCharsToFile(generated_file_path, generated_bytes);
 	const string retreived_file_path = "retreived.bin";
 	fs.RetreiveFile(generated_file_name, retreived_file_path);
 	vector<char> retreived_bytes;

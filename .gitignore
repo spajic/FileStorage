@@ -199,3 +199,5 @@ FakesAssemblies/
 /generated.bin
 /FileUtilsTest.bin
 /FileUtilsWriteVectorOfCharsTest.bin
+*.bin
+/fake_path
