@@ -123,13 +123,10 @@ TEST(RamFileStorageRetreiveTest, NoThrowForAbsentFile) {
 
 TEST(RamFileStorageRetreiveTest, RetreivesFileExectlyAsItWasStored) {
 	RamFileStorage fs;
-	vector<char> generated_bytes{ 'H', 'e', 'l', 'l', 'o' };
+	vector<char> generated_bytes{ 'H', 'e', 'l', 'l', 'o', 'F', 'S'};
 	const string generated_file_path = "generated.bin";
 	const string generated_file_name = "generated";
-	std::ofstream generated_file(generated_file_path, std::ios::binary);
-	for (char b : generated_bytes) {
-		generated_file << b;
-	}
+	FileUtils::WriteVectorOfCharsToFile(generated_file_path, &generated_bytes);
 	const string retreived_file_path = "retreived.bin";
 	fs.RetreiveFile(generated_file_name, retreived_file_path);
 	vector<char> retreived_bytes;
