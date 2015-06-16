@@ -49,12 +49,7 @@ TEST(FileUtilsTest, CanReadFileToVectorOfChars) {
 
 	vector<char> retreived_chars;
 	FileUtils::ReadFileToVectorOfChars(generated_file_path, &retreived_chars);
-	ASSERT_EQ(generated_chars.size(), retreived_chars.size());
-	EXPECT_EQ(true,
-		std::equal(
-		generated_chars.begin(), generated_chars.end(), retreived_chars.begin()
-		)
-	);
+	ASSERT_EQ(true, generated_chars == retreived_chars);
 }
 
 TEST(FileUtilsTest, CanWriteVectorOfCharsToFile) {
@@ -63,12 +58,7 @@ TEST(FileUtilsTest, CanWriteVectorOfCharsToFile) {
 	FileUtils::WriteVectorOfCharsToFile(written_file_name, &generated_chars);
 	vector<char> read_chars;
 	FileUtils::ReadFileToVectorOfChars(written_file_name, &read_chars);
-	ASSERT_EQ(generated_chars.size(), read_chars.size());
-	EXPECT_EQ(true,
-		std::equal(
-		generated_chars.begin(), generated_chars.end(), read_chars.begin()
-		)
-	);
+	ASSERT_EQ(true, generated_chars == read_chars);
 }
 
 TEST(RamFileStorageTest, CanCreateClass) {
@@ -121,13 +111,7 @@ TEST(RamFileStorageGetFileNamesLitsTest, ReturnsCorrectListForSomeStoredFiles) {
 		fs.StoreFile(name, fake_path);
 	}
 	vector<string> result_names_list = fs.GetFileNamesList();
-	EXPECT_EQ(names_to_store.size(), result_names_list.size());
-	EXPECT_EQ(
-		true, std::equal(
-			names_to_store.begin(), names_to_store.end(), 
-			result_names_list.begin()
-		)
-	);
+	ASSERT_EQ(true, names_to_store == result_names_list);
 }
 
 TEST(RamFileStorageRetreiveTest, NoThrowForAbsentFile) {
@@ -151,12 +135,7 @@ TEST(RamFileStorageRetreiveTest, RetreivesFileExectlyAsItWasStored) {
 	vector<char> retreived_bytes;
 	FileUtils::ReadFileToVectorOfChars(retreived_file_path, &retreived_bytes);
 		
-	ASSERT_EQ(generated_bytes.size(), retreived_bytes.size());
-	EXPECT_EQ(true,
-		std::equal(
-			generated_bytes.begin(), generated_bytes.end(), retreived_bytes.begin()
-		)
-	);
+	ASSERT_EQ(true, generated_bytes == retreived_bytes);
 }
 
 //TEST(RamFileStorageTest, MakesSomeWork) {
