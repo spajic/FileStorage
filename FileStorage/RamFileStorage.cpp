@@ -1,19 +1,22 @@
 #include "RamFileStorage.h"
 
 #include <fstream>
+#include <vector>
+
+#include "FileUtils.h"
 
 RamFileStorage::RamFileStorage() {
 
 }
 
 void RamFileStorage::StoreFile(string name, string read_from) {
-	std::ifstream f(read_from, std::ios::binary);
-
-	//ram_storage[name] = ;
+	std::vector<char> chars;
+	FileUtils::ReadFileToVectorOfChars(read_from, &chars);
+	ram_storage[name] = chars;
 }
 
 bool RamFileStorage::HasFile(string name) {
-	return true;
+	return (ram_storage.count(name) == 1);
 }
 
 void RamFileStorage::RemoveFile(string name) {

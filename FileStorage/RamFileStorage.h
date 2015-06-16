@@ -3,6 +3,7 @@
 #include "FileStorage.h"
 
 #include <map>
+#include <vector>
 
 class RamFileStorage : public FileStorage {
 public:
@@ -13,6 +14,5 @@ public:
 	bool HasFile(string name);
 	std::vector<string> GetFileNamesList();
 private:
-	typedef char BYTE;
-	std::map < string, BYTE > ram_storage;
+	std::map < string, std::vector<char> > ram_storage;
 };
