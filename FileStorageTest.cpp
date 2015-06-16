@@ -12,6 +12,7 @@
 #include <iterator>
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "FileStorage\FileStorage.h"
 #include "FileStorage\RamFileStorage.h"
@@ -22,6 +23,7 @@ using std::vector;
 
 const string kTempPath = "tests_temp\\";
 
+//----------------------- Test File Utils -------------------------------
 TEST(FileUtilsTest, CanReadFileToVectorOfChars) {
 	static const char arr[] = {'t', 'e', 's', 't', ' ', 'u', 't', 'i', 'l', 's' };
 	vector<char> generated_chars(arr, arr + sizeof(arr) / sizeof(arr[0]) );
@@ -47,66 +49,63 @@ TEST(FileUtilsTest, CanWriteVectorOfCharsToFile) {
 	ASSERT_EQ(true, generated_chars == read_chars);
 }
 
-
-
-class AbstractFileStorageTest : public ::testing::TestWithParam<FileStorage*> {
-	// You can implement all the usual fixture class members here.
-	// To access the test parameter, call GetParam() from class
-	// TestWithParam<T>.
-};
-
-TEST_P(AbstractFileStorageTest, ReturnsFalseForAbsentFile) {
-	FileStorage *fs = GetParam();
-	EXPECT_EQ(false, fs->HasFile("any name"));
-}
-
-RamFileStorage rfs;
-FileStorage *fs_ram = &rfs;
-
-INSTANTIATE_TEST_CASE_P(TestFileStorageImplementations,
-												AbstractFileStorageTest,
-												::testing::Values(fs_ram)
-);
-
+//-------------------- Test instantiation of FileStorage implementations ------
 TEST(RamFileStorageTest, CanCreateClass) {
 	RamFileStorage fs;
 }
 
-TEST(RamFileStorageHasFileTest, ReturnsFalseForAbsentFile) {
-	RamFileStorage fs;
-	EXPECT_EQ(false, fs.HasFile("any name"));
+//------------------- Value-parametrized tests for FileStorage ----------
+class FileStorageTest : public ::testing::TestWithParam<string> {
+protected:
+	std::unique_ptr<FileStorage> fs;
+
+	virtual void SetUp() {
+		string fs_impl = GetParam();
+		if(fs_impl == "RamFileStorage") {
+			fs = std::unique_ptr<FileStorage>(new RamFileStorage);
+		}
+	}
+};
+
+const string fs_implementations[] = {"RamFileStorage"};
+INSTANTIATE_TEST_CASE_P(TestFileStorageImpls,
+												FileStorageTest,
+												::testing::ValuesIn(fs_implementations)
+);
+
+
+//--------------------- FileStorage Tests ------------------------------
+TEST_P(FileStorageTest, HasFileReturnsFalseForAbsentFile) {
+	EXPECT_EQ(false, fs->HasFile("any name"));
 }
 
-TEST(RamFileStorageHasFileTest, ReturnsTrueForStoredFile) {
-	 RamFileStorage fs;
-	 string read_from = "fake path";
-	 string stored_file_name = "first stored file";
-	 EXPECT_EQ(false, fs.HasFile(stored_file_name));
-	 fs.StoreFile(stored_file_name, read_from);
-	 EXPECT_EQ(true, fs.HasFile(stored_file_name));
+TEST_P(FileStorageTest, HasFileReturnsTrueForStoredFile) {
+	string read_from = "fake path";
+	string stored_file_name = "first stored file";
+
+	EXPECT_EQ(false, fs->HasFile(stored_file_name));
+	fs->StoreFile(stored_file_name, read_from);
+	EXPECT_EQ(true, fs->HasFile(stored_file_name));
 }
 
-TEST(RamFileStorageRemoveTest, DoNotThrowOnAttemptToRemoveAbsentFile) {
-	RamFileStorage fs;
+TEST_P(FileStorageTest, RemoveFileDoNotThrowOnAttemptToRemoveAbsentFile) {
 	EXPECT_NO_THROW({
-		fs.RemoveFile("absent file name");
+		fs->RemoveFile("absent file name");
 	});
 }
 
-TEST(RamFileStorageRemoveTest, RemovedFileNotDetectedByHasFile) {
-	RamFileStorage fs;
+TEST_P(FileStorageTest, RemovedFileNotDetectedByHasFile) {
 	string read_from = "fake path";
 	string really_stored_file_name = "file1";
-	fs.StoreFile(really_stored_file_name, read_from);
-	EXPECT_EQ(true, fs.HasFile(really_stored_file_name));
-	fs.RemoveFile(really_stored_file_name);
-	EXPECT_EQ(false, fs.HasFile(really_stored_file_name));
+	fs->StoreFile(really_stored_file_name, read_from);
+	EXPECT_EQ(true, fs->HasFile(really_stored_file_name));
+	fs->RemoveFile(really_stored_file_name);
+	EXPECT_EQ(false, fs->HasFile(really_stored_file_name));
 }
 
-TEST(RamFileStorageGetFileNamesLitsTest, ReturnsEmptyListWhenNothingStored) {
-	RamFileStorage fs;
+TEST_P(FileStorageTest, GetFileNamesLitsReturnsEmptyListWhenNothingStored) {
 	vector<string> results;
-	results = fs.GetFileNamesList();
+	results = fs->GetFileNamesList();
 	EXPECT_EQ(0, results.size());
 }
 
@@ -141,7 +140,7 @@ TEST(RamFileStorageRetreiveTest, RetreivesFileExectlyAsItWasStored) {
 
 	fs.StoreFile(generated_file_name, generated_file_path);
 	fs.RetreiveFile(generated_file_name, retreived_file_path);
-	
+
 	FileUtils::ReadFileToVectorOfChars(retreived_file_path, &retreived_bytes);
 	ASSERT_EQ(true, generated_bytes == retreived_bytes);
 }
@@ -153,7 +152,7 @@ TEST(RamFileStorageTest, StoresAndRetreivesRealFile) {
 	string real_file_name = "pic";
 	fs.StoreFile(real_file_name, real_file_path);
 	fs.RetreiveFile(real_file_name, retreive_path);
-	
+
 	vector<char> stored_chars;
 	FileUtils::ReadFileToVectorOfChars(real_file_path, &stored_chars);
 
