@@ -17,4 +17,8 @@ namespace FileUtils {
 			std::back_inserter(*v)
 		);		
 	}
+
+	void WriteVectorOfCharsToFile(const std::string file_name, std::vector<char> *v){
+		return;
+	}
 }

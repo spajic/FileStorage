@@ -57,6 +57,20 @@ TEST(FileUtilsTest, CanReadFileToVectorOfChars) {
 	);
 }
 
+TEST(FileUtilsTest, CanWriteVectorOfCharsToFile) {
+	vector<char> generated_chars{ 't', 'e', 's', 't', ' ', 'u', 't', 'i', 'l', 's' };
+	string written_file_name = "FileUtilsWriteVectorOfCharsTest.bin";
+	FileUtils::WriteVectorOfCharsToFile(written_file_name, &generated_chars);
+	vector<char> read_chars;
+	FileUtils::ReadFileToVectorOfChars(written_file_name, &read_chars);
+	ASSERT_EQ(generated_chars.size(), read_chars.size());
+	EXPECT_EQ(true,
+		std::equal(
+		generated_chars.begin(), generated_chars.end(), read_chars.begin()
+		)
+	);
+}
+
 TEST(RamFileStorageTest, CanCreateClass) {
 	RamFileStorage fs;
 }
@@ -124,9 +138,8 @@ TEST(RamFileStorageRetreiveTest, NoThrowForAbsentFile) {
 }
 
 TEST(RamFileStorageRetreiveTest, RetreivesFileExectlyAsItWasStored) {
-	typedef char BYTE;
 	RamFileStorage fs;
-	vector<BYTE> generated_bytes{ 'H', 'e', 'l', 'l', 'o' };
+	vector<char> generated_bytes{ 'H', 'e', 'l', 'l', 'o' };
 	const string generated_file_path = "generated.bin";
 	const string generated_file_name = "generated";
 	std::ofstream generated_file(generated_file_path, std::ios::binary);
@@ -135,13 +148,8 @@ TEST(RamFileStorageRetreiveTest, RetreivesFileExectlyAsItWasStored) {
 	}
 	const string retreived_file_path = "retreived.bin";
 	fs.RetreiveFile(generated_file_name, retreived_file_path);
-	std::ifstream retreived_file(retreived_file_path, std::ios::binary);
-	vector<BYTE> retreived_bytes;
-	std::copy(
-		std::istreambuf_iterator<BYTE>(retreived_file),
-		std::istreambuf_iterator<BYTE>(),
-		retreived_bytes.begin()
-	);
+	vector<char> retreived_bytes;
+	FileUtils::ReadFileToVectorOfChars(retreived_file_path, &retreived_bytes);
 		
 	ASSERT_EQ(generated_bytes.size(), retreived_bytes.size());
 	EXPECT_EQ(true,
