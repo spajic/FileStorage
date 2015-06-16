@@ -5,6 +5,8 @@
 
 #include "FileUtils.h"
 
+#include "sqlite3.h"
+
 SqliteFileStorage::SqliteFileStorage() {
 
 }
