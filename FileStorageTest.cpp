@@ -20,6 +20,8 @@
 using std::string;
 using std::vector;
 
+const string kTempPath = "tests_temp\\";
+
 //class MockTurtle : public Turtle {
 //public:
 //	MOCK_METHOD0(PenUp, void());
@@ -137,9 +139,22 @@ TEST(RamFileStorageRetreiveTest, RetreivesFileExectlyAsItWasStored) {
 	ASSERT_EQ(true, generated_bytes == retreived_bytes);
 }
 
-//TEST(RamFileStorageTest, MakesSomeWork) {
-//	RamFileStorage fs;
-//}
+TEST(RamFileStorageTest, StoresAndRetreivesRealFile) {
+	RamFileStorage fs;
+	string real_file_path = kTempPath + "pic.jpg";
+	string retreive_path = kTempPath + "retreived_pic.jpg";
+	string real_file_name = "pic";
+	fs.StoreFile(real_file_name, real_file_path);
+	fs.RetreiveFile(real_file_name, retreive_path);
+	
+	vector<char> stored_chars;
+	FileUtils::ReadFileToVectorOfChars(real_file_path, &stored_chars);
+
+	vector<char> retreived_chars;
+	FileUtils::ReadFileToVectorOfChars(retreive_path, &retreived_chars);
+
+	ASSERT_EQ(stored_chars, retreived_chars);
+}
 
 
 int runAllTests(int argc, char* argv[]) {
