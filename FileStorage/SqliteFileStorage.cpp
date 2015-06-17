@@ -85,7 +85,7 @@ void SqliteFileStorage::PrepareInsertFileStatement() {
 	}
 }
 
-void SqliteFileStorage::BindNameToInsertFileStatement( std::string name ) {
+void SqliteFileStorage::BindNameToInsertFileStatement(const std::string &name ) {
 	_rc = sqlite3_bind_text(
 		_insertFileStmt, // (sqlite3_stmt*) statement to prepare
 		1, // (int) number of bind parameter
@@ -99,7 +99,7 @@ void SqliteFileStorage::BindNameToInsertFileStatement( std::string name ) {
 	}
 }
 
-void SqliteFileStorage::BindFileBlobToInsertFileStatement( std::vector<char> fb ) {
+void SqliteFileStorage::BindFileBlobToInsertFileStatement(const std::vector<char> &fb ) {
 	_rc = sqlite3_bind_blob(
 		_insertFileStmt, 
 		2, 
@@ -134,7 +134,7 @@ void SqliteFileStorage::PrepareCheckHasFileStatement() {
 	}
 }
 
-void SqliteFileStorage::BindNameToCheckHasFileStatement( std::string name ) {
+void SqliteFileStorage::BindNameToCheckHasFileStatement(const std::string &name ) {
 	_rc = sqlite3_bind_text(
 		_checkHasFileStmt, // (sqlite3_stmt*) statement to prepare
 		1, // (int) number of bind parameter

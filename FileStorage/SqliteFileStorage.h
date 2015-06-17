@@ -32,20 +32,20 @@ private:
 	void CreateTableIfNotExists();
 
 	void PrepareInsertFileStatement();
-	void BindNameToInsertFileStatement(std::string name);
-	void BindFileBlobToInsertFileStatement(std::vector<char> fb);
+	void BindNameToInsertFileStatement(const std::string &name);
+	void BindFileBlobToInsertFileStatement(const std::vector<char> &fb);
 	void ExecuteInsertFileStatement();
 
 	void PrepareDeleteFileStatement();
-	void BindNameToDeleteFileStatement(std::string name);
+	void BindNameToDeleteFileStatement(const std::string &name);
 	void ExecuteDeleteFileStatement();
 
 	void PrepareSelectFileStatement();
-	void BindNameToSelectFileStatement(std::string name);
+	void BindNameToSelectFileStatement(const std::string &name);
 	void ExecuteSelectFileStatement();
 
 	void PrepareCheckHasFileStatement();
-	void BindNameToCheckHasFileStatement(std::string name);
+	void BindNameToCheckHasFileStatement(const std::string &name);
 	bool ExecuteCheckHasFileStatement();
 
 	void FinishWorkWithSqlite3();
