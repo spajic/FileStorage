@@ -24,41 +24,7 @@ void SqliteFileStorage::InitDatabase(std::string file_name) {
 	char **results = NULL;
 	int rows, columns;
 	sqlite3_get_table(db, sqlSelect, &results, &rows, &columns, &error);
-	
 	sqlite3_free_table(results);
-	//else
-	//{
-	//	// Display Table
-	//	for (int rowCtr = 0; rowCtr <= rows; ++rowCtr)
-	//	{
-	//		for (int colCtr = 0; colCtr < columns; ++colCtr)
-	//		{
-	//			// Determine Cell Position
-	//			int cellPosition = (rowCtr * columns) + colCtr;
-
-	//			// Display Cell Value
-	//			cout.width(12);
-	//			cout.setf(ios::left);
-	//			cout << results[cellPosition] << " ";
-	//		}
-
-	//		// End Line
-	//		cout << endl;
-
-	//		// Display Separator For Header
-	//		if (0 == rowCtr)
-	//		{
-	//			for (int colCtr = 0; colCtr < columns; ++colCtr)
-	//			{
-	//				cout.width(12);
-	//				cout.setf(ios::left);
-	//				cout << "~~~~~~~~~~~~ ";
-	//			}
-	//			cout << endl;
-	//		}
-	//	}
-	//}
-
 }
 
 SqliteFileStorage::~SqliteFileStorage() {
