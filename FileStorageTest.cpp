@@ -14,6 +14,8 @@
 #include <string>
 #include <memory>
 
+#include <cstdio>
+
 #include "FileStorage\FileStorage.h"
 #include "FileStorage\RamFileStorage.h"
 #include "FileStorage\SqliteFileStorage.h"
@@ -73,7 +75,9 @@ protected:
 			fs = std::unique_ptr<FileStorage>(new RamFileStorage);
 		}
 		else if(fs_impl == "Sqlite") {
-			fs = std::unique_ptr<FileStorage>(new SqliteFileStorage);
+			string test_db_path = kTempPath+"testSqliteFileStorage.db";
+			remove(test_db_path.c_str());
+			fs = std::unique_ptr<FileStorage>(new SqliteFileStorage(test_db_path));
 		}
 	}
 };
