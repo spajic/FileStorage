@@ -72,11 +72,11 @@ void SqliteTestDB1Generator::InsertDataIntoTable() {
 	for(auto &d : _dataToInsert) {
 		BindTextToInsertStatement(d.first);
 		BindBlobToInsertStatement(d.second);
-		ExecuteInesrtStatement();
+		ExecuteInsertStatement();
 	}
 }
 
-void SqliteTestDB1Generator::BindTextToInsertStatement(std::string name) {
+void SqliteTestDB1Generator::BindTextToInsertStatement(const std::string &name) {
 	_rc = sqlite3_bind_text(
 		_preparedInsert, // (sqlite3_stmt*) statement to prepare
 		1, // (int) number of bind parameter
@@ -90,7 +90,7 @@ void SqliteTestDB1Generator::BindTextToInsertStatement(std::string name) {
 	}
 }
 
-void SqliteTestDB1Generator::BindBlobToInsertStatement(std::vector<char> b) {
+void SqliteTestDB1Generator::BindBlobToInsertStatement(const std::vector<char> &b) {
 	_rc = sqlite3_bind_blob(
 		_preparedInsert, 
 		2, 
@@ -103,7 +103,7 @@ void SqliteTestDB1Generator::BindBlobToInsertStatement(std::vector<char> b) {
 	}
 }
 
-void SqliteTestDB1Generator::ExecuteInesrtStatement() {
+void SqliteTestDB1Generator::ExecuteInsertStatement() {
 	_rc = sqlite3_step(_preparedInsert);
 	if(_rc != SQLITE_DONE) {
 		throw "Can't execute prepared insert statement";
@@ -120,9 +120,9 @@ void SqliteTestDB1Generator::GenerateDataToInsert() {
 	std::vector<char> blob1(3);
 	std::fill(blob1.begin(), blob1.end(), '1');
 	std::vector<char> blob2(6);
-	std::fill(blob1.begin(), blob1.end(), '2');
+	std::fill(blob2.begin(), blob2.end(), '2');
 	std::vector<char> blob3(9);
-	std::fill(blob1.begin(), blob1.end(), '3');
+	std::fill(blob3.begin(), blob3.end(), '3');
 	_dataToInsert["file1"] = blob1;
 	_dataToInsert["file2"] = blob2;
 	_dataToInsert["file3"] = blob3;

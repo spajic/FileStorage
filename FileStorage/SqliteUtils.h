@@ -16,9 +16,9 @@ private:
 	void PrepareInsertStatement();
 	void GenerateDataToInsert();
 	void InsertDataIntoTable();
-	void BindTextToInsertStatement(std::string name);
-	void BindBlobToInsertStatement(std::vector<char> b);
-	void ExecuteInesrtStatement();
+	void BindTextToInsertStatement(const std::string &name);
+	void BindBlobToInsertStatement(const std::vector<char> &b);
+	void ExecuteInsertStatement();
 	void FinalizeWorkWithSqlite3();
 
 	std::map<std::string, std::vector<char> > _dataToInsert;
