@@ -18,6 +18,7 @@
 #include "FileStorage\RamFileStorage.h"
 #include "FileStorage\SqliteFileStorage.h"
 #include "FileStorage\FileUtils.h"
+#include "FileStorage\SqliteUtils.h"
 
 using std::string;
 using std::vector;
@@ -48,6 +49,11 @@ TEST(FileUtilsTest, CanWriteVectorOfCharsToFile) {
 	vector<char> read_chars;
 	FileUtils::ReadFileToVectorOfChars(written_file_name, &read_chars);
 	ASSERT_EQ(true, generated_chars == read_chars);
+}
+
+//----------------------- Test File Utils -------------------------------
+TEST(SqliteUtils, CanCreateTestDB1) {
+	ASSERT_EQ(true, GenerateTestDB1(kTempPath + "testDB1.db"));
 }
 
 //-------------------- Test instantiation of FileStorage implementations ------

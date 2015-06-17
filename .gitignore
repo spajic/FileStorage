@@ -201,3 +201,4 @@ FakesAssemblies/
 /FileUtilsWriteVectorOfCharsTest.bin
 *.bin
 /fake_path
+*.db
