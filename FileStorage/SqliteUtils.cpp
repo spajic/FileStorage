@@ -16,7 +16,7 @@ using std::string;
  - (File 2, 222222)
  - (File 3, 333333333)
 */
-bool GenerateTestDB1(std::string db_name) {
+bool SqliteTestDB1Generator::GenerateTestDB1(std::string db_name) {
 	if(std::ifstream(db_name)) {
 		if(remove(db_name.c_str()) != 0) {
 			return false;

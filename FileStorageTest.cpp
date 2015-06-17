@@ -53,7 +53,8 @@ TEST(FileUtilsTest, CanWriteVectorOfCharsToFile) {
 
 //----------------------- Test File Utils -------------------------------
 TEST(SqliteUtils, CanCreateTestDB1) {
-	ASSERT_EQ(true, GenerateTestDB1(kTempPath + "testDB1.db"));
+	SqliteTestDB1Generator g1;
+	ASSERT_EQ(true, g1.GenerateTestDB1(kTempPath + "testDB1.db"));
 }
 
 //-------------------- Test instantiation of FileStorage implementations ------
