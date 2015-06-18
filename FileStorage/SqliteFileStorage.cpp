@@ -61,8 +61,9 @@ void SqliteFileStorage::RetreiveFile(string name, string store_to) {
 	const void* blob_ptr = sqlite3_column_blob(_retreiveFileStmt, 0);
 	int size_in_bytes = sqlite3_column_bytes(_retreiveFileStmt, 0);
 	std::vector<char> chars(size_in_bytes);
-	memcpy(chars.data(), (const char*)blob_ptr, size_in_bytes);
+	memcpy(chars.data(), (const char*)blob_ptr, size_in_bytes);	
 	sqlite3_reset(_retreiveFileStmt);
+	FileUtils::WriteVectorOfCharsToFile(store_to, chars);
 }
 
 std::vector<string> SqliteFileStorage::GetFileNamesList() {
