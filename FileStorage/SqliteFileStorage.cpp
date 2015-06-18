@@ -10,6 +10,7 @@
 
 using SqliteUtils::PrepareStatment;
 using SqliteUtils::BindString;
+using SqliteUtils::BindBlob;
 
 SqliteFileStorage::SqliteFileStorage(std::string file_name) {
 	_db_name = file_name;
@@ -32,7 +33,7 @@ void SqliteFileStorage::StoreFile(string name, string read_from) {
 	std::vector<char> chars;
 	FileUtils::ReadFileToVectorOfChars(read_from, &chars);
 	BindString(_insertFileStmt, 1, name);
-	BindFileBlobToInsertFileStatement(chars);
+	BindBlob(_insertFileStmt, 2, chars);
 	ExecuteInsertFileStatement();
 }
 
@@ -74,19 +75,6 @@ void SqliteFileStorage::CreateTableIfNotExists() {
 
 void SqliteFileStorage::FinishWorkWithSqlite3() {
 	sqlite3_close(_db);
-}
-
-void SqliteFileStorage::BindFileBlobToInsertFileStatement(const std::vector<char> &fb ) {
-	_rc = sqlite3_bind_blob(
-		_insertFileStmt, 
-		2, 
-		fb.data(), 
-		fb.size(), 
-		SQLITE_STATIC
-		);
-	if(_rc != SQLITE_OK) {
-		throw "Can't bind blob to insert statement";
-	}
 }
 
 void SqliteFileStorage::ExecuteInsertFileStatement() {

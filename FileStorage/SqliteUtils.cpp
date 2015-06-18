@@ -169,4 +169,17 @@ void BindBlob(sqlite3_stmt *stmt, int param_number, const std::vector<char> &cha
 	}
 }
 
+void BindBlob(sqlite3_stmt *stmt, int param_number, const std::vector<char> chars) {
+	int rc = sqlite3_bind_blob(
+		stmt,
+		param_number,
+		chars.data(),
+		chars.size(),
+		SQLITE_STATIC
+		);
+	if (rc != SQLITE_OK) {
+		throw std::exception("Can't bind blob to statement");
+	}
+}
+
 }; // end SqliteUtils namespace
