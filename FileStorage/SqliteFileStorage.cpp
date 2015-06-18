@@ -4,8 +4,11 @@
 #include <vector>
 
 #include "FileUtils.h"
+#include "SqliteUtils.h"
 
 #include "sqlite3.h"
+
+using SqliteUtils::PrepareStatment;
 
 SqliteFileStorage::SqliteFileStorage(std::string file_name) {
 	_db_name = file_name;
@@ -17,6 +20,7 @@ void SqliteFileStorage::InitDatabase() {
 	CreateTableIfNotExists();
 	PrepareInsertFileStatement();
 	PrepareCheckHasFileStatement();
+	PrepareStatment(_db, _deleteFileStmt, "delete from FileStorage where name = ?");
 }
 
 SqliteFileStorage::~SqliteFileStorage() {

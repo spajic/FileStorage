@@ -26,6 +26,7 @@ private:
 
 	sqlite3_stmt *_insertFileStmt;
 	sqlite3_stmt *_checkHasFileStmt;
+	sqlite3_stmt *_deleteFileStmt;
 
 	void InitDatabase();
 	void OpenDatabaseConnection();
