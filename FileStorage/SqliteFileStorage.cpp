@@ -43,7 +43,8 @@ bool SqliteFileStorage::HasFile(string name) {
 }
 
 void SqliteFileStorage::RemoveFile(string name) {
-
+	BindString(_deleteFileStmt, 1, name);
+	ExecuteDeleteFileStatement();
 }
 
 void SqliteFileStorage::RetreiveFile(string name, string store_to) {
@@ -74,6 +75,9 @@ void SqliteFileStorage::CreateTableIfNotExists() {
 }
 
 void SqliteFileStorage::FinishWorkWithSqlite3() {
+	sqlite3_finalize(_checkHasFileStmt);
+	sqlite3_finalize(_deleteFileStmt);
+	sqlite3_finalize(_insertFileStmt);
 	sqlite3_close(_db);
 }
 
@@ -93,4 +97,12 @@ bool SqliteFileStorage::ExecuteCheckHasFileStatement() {
 	int n = sqlite3_column_int(_checkHasFileStmt, 0);
 	sqlite3_reset(_checkHasFileStmt);
 	return (n > 0);
+}
+
+void SqliteFileStorage::ExecuteDeleteFileStatement() {
+	_rc = sqlite3_step(_deleteFileStmt);
+	if (_rc != SQLITE_DONE) {
+		throw std::exception("Can't execute prepared remove file statement");
+	}
+	sqlite3_reset(_deleteFileStmt);
 }
