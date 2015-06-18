@@ -23,7 +23,8 @@ void SqliteFileStorage::InitDatabase() {
 	PrepareStatment(_db, &_insertFileStmt, "INSERT INTO FileStorage (name, file) values (?, ?)");
 	PrepareStatment(_db, &_checkHasFileStmt, "select count(*) as n from FileStorage where name = ?");
 	PrepareStatment(_db, &_deleteFileStmt, "delete from FileStorage where name = ?");
-	PrepareStatment(_db, &_retreiveFileStmt, "select file as f from FileStorage where name = ?");
+	PrepareStatment(_db, &_retreiveFileStmt, "select file from FileStorage where name = ?");
+	PrepareStatment(_db, &_getFileNamesStmt, "select name from FileStorage");
 }
 
 SqliteFileStorage::~SqliteFileStorage() {
@@ -68,7 +69,22 @@ void SqliteFileStorage::RetreiveFile(string name, string store_to) {
 
 std::vector<string> SqliteFileStorage::GetFileNamesList() {
 	std::vector<string> result;
-	result.push_back("hello from sqilte stub");
+	
+	_rc = sqlite3_step(_getFileNamesStmt);
+	if (_rc != SQLITE_ROW) {
+		return result;
+	}
+	while (_rc == SQLITE_ROW) {
+		// force treat column as text and get size in bytes
+		const void* text_ptr = sqlite3_column_text(_getFileNamesStmt, 0);
+		int size_in_bytes = sqlite3_column_bytes(_getFileNamesStmt, 0);
+		std::vector<char> chars(size_in_bytes);
+		memcpy(chars.data(), (const char*)text_ptr, size_in_bytes);
+		string str(chars.data());	
+		result.push_back(str);
+		sqlite3_step(_getFileNamesStmt);
+	}
+	sqlite3_reset(_getFileNamesStmt);
 	return result;
 }
 
@@ -94,6 +110,7 @@ void SqliteFileStorage::FinishWorkWithSqlite3() {
 	sqlite3_finalize(_deleteFileStmt);
 	sqlite3_finalize(_insertFileStmt);
 	sqlite3_finalize(_retreiveFileStmt);
+	sqlite3_finalize(_getFileNamesStmt);
 	sqlite3_close(_db);
 }
 
