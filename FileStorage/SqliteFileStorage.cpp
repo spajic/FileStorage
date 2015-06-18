@@ -50,6 +50,8 @@ std::vector<string> SqliteFileStorage::GetFileNamesList() {
 	return result;
 }
 
+
+// --------------------------- private part ------------------------------------------
 void SqliteFileStorage::OpenDatabaseConnection() {
 	_rc = sqlite3_open(_db_name.c_str(), &_db);
 	if(_rc) {
