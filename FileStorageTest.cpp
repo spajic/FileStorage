@@ -82,8 +82,7 @@ protected:
 	}
 };
 
-//const string fs_implementations[] = {"Ram", "Sqlite"};
-const string fs_implementations[] = { "Sqlite" };
+const string fs_implementations[] = {"Ram", "Sqlite"};
 INSTANTIATE_TEST_CASE_P(TestFileStorageImpls,
 												FileStorageTest,
 												::testing::ValuesIn(fs_implementations)

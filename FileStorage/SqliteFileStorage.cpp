@@ -80,9 +80,9 @@ std::vector<string> SqliteFileStorage::GetFileNamesList() {
 		int size_in_bytes = sqlite3_column_bytes(_getFileNamesStmt, 0);
 		std::vector<char> chars(size_in_bytes);
 		memcpy(chars.data(), (const char*)text_ptr, size_in_bytes);
-		string str(chars.data());	
+		string str(chars.data(), size_in_bytes);	
 		result.push_back(str);
-		sqlite3_step(_getFileNamesStmt);
+		_rc = sqlite3_step(_getFileNamesStmt);
 	}
 	sqlite3_reset(_getFileNamesStmt);
 	return result;
