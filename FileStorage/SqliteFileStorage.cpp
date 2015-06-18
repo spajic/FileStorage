@@ -23,6 +23,7 @@ void SqliteFileStorage::InitDatabase() {
 	PrepareStatment(_db, &_insertFileStmt, "INSERT INTO FileStorage (name, file) values (?, ?)");
 	PrepareStatment(_db, &_checkHasFileStmt, "select count(*) as n from FileStorage where name = ?");
 	PrepareStatment(_db, &_deleteFileStmt, "delete from FileStorage where name = ?");
+	PrepareStatment(_db, &_retreiveFileStmt, "select file as f from FileStorage where name = ?");
 }
 
 SqliteFileStorage::~SqliteFileStorage() {
@@ -48,7 +49,20 @@ void SqliteFileStorage::RemoveFile(string name) {
 }
 
 void SqliteFileStorage::RetreiveFile(string name, string store_to) {
-	
+	if (!HasFile(name)) {
+		return;
+	}
+	BindString(_retreiveFileStmt, 1, name);
+	_rc = sqlite3_step(_retreiveFileStmt);
+	if (_rc != SQLITE_ROW) {
+		throw "Can't execute retreive file statement";
+	}
+	// force treat column as blob and get size in bytes
+	const void* blob_ptr = sqlite3_column_blob(_retreiveFileStmt, 0);
+	int size_in_bytes = sqlite3_column_bytes(_retreiveFileStmt, 0);
+	std::vector<char> chars(size_in_bytes);
+	memcpy(chars.data(), (const char*)blob_ptr, size_in_bytes);
+	sqlite3_reset(_retreiveFileStmt);
 }
 
 std::vector<string> SqliteFileStorage::GetFileNamesList() {
@@ -78,6 +92,7 @@ void SqliteFileStorage::FinishWorkWithSqlite3() {
 	sqlite3_finalize(_checkHasFileStmt);
 	sqlite3_finalize(_deleteFileStmt);
 	sqlite3_finalize(_insertFileStmt);
+	sqlite3_finalize(_retreiveFileStmt);
 	sqlite3_close(_db);
 }
 
