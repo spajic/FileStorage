@@ -37,9 +37,9 @@ TEST(FileUtilsTest, CanReadFileToVectorOfChars) {
 		generated_file << b;
 	}
 	generated_file.close();
-
 	vector<char> retreived_chars;
 	FileUtils::ReadFileToVectorOfChars(generated_file_path, &retreived_chars);
+	remove(generated_file_path.c_str());
 	ASSERT_EQ(true, generated_chars == retreived_chars);
 }
 
@@ -50,6 +50,7 @@ TEST(FileUtilsTest, CanWriteVectorOfCharsToFile) {
 	FileUtils::WriteVectorOfCharsToFile(written_file_name, generated_chars);
 	vector<char> read_chars;
 	FileUtils::ReadFileToVectorOfChars(written_file_name, &read_chars);
+	remove(written_file_name.c_str());
 	ASSERT_EQ(true, generated_chars == read_chars);
 }
 
@@ -136,9 +137,11 @@ TEST_P(FileStorageTest, GetFileNamesLitsReturnsCorrectListForSomeStoredFiles) {
 }
 
 TEST_P(FileStorageTest, RetreiveNoThrowForAbsentFile) {
+	std::string fake_path = kTempPath + "fake_path.bin";
 	EXPECT_NO_THROW({
-		fs->RetreiveFile("absent file name", kTempPath + "fake_path.bin");
+		fs->RetreiveFile("absent file name", fake_path);
 	});
+	remove(fake_path.c_str());
 }
 
 TEST_P(FileStorageTest, RetreivesFileExectlyAsItWasStored) {
@@ -146,7 +149,7 @@ TEST_P(FileStorageTest, RetreivesFileExectlyAsItWasStored) {
 	vector<char> generated_bytes(arr, arr + sizeof(arr) / sizeof(arr[0]) );
 	const string generated_file_path = kTempPath + "generated.bin";
 	const string generated_file_name = "generated";
-	FileUtils::WriteVectorOfCharsToFile(generated_file_path, generated_bytes);
+	FileUtils::TempFile tf(generated_file_path, generated_bytes);
 	const string retreived_file_path = kTempPath + "retreived.bin";
 	vector<char> retreived_bytes;
 
@@ -154,12 +157,14 @@ TEST_P(FileStorageTest, RetreivesFileExectlyAsItWasStored) {
 	fs->RetreiveFile(generated_file_name, retreived_file_path);
 
 	FileUtils::ReadFileToVectorOfChars(retreived_file_path, &retreived_bytes);
+	remove(retreived_file_path.c_str());
 	ASSERT_EQ(true, generated_bytes == retreived_bytes);
 }
 
 TEST_P(FileStorageTest, StoresAndRetreivesRealFile) {
 	string real_file_path = kTempPath + "pic.jpg";
 	string retreive_path = kTempPath + "retreived_pic.jpg";
+	remove(retreive_path.c_str());
 	string real_file_name = "pic";
 	fs->StoreFile(real_file_name, real_file_path);
 	fs->RetreiveFile(real_file_name, retreive_path);
