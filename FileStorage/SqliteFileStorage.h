@@ -28,6 +28,7 @@ private:
 	sqlite3_stmt *_checkHasFileStmt;
 	sqlite3_stmt *_deleteFileStmt;
 	sqlite3_stmt *_retreiveFileStmt;
+	sqlite3_stmt *_getFileNamesStmt;
 
 	void InitDatabase();
 	void OpenDatabaseConnection();
