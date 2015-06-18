@@ -18,9 +18,9 @@ SqliteFileStorage::SqliteFileStorage(std::string file_name) {
 void SqliteFileStorage::InitDatabase() {
 	OpenDatabaseConnection();
 	CreateTableIfNotExists();
-	PrepareInsertFileStatement();
-	PrepareCheckHasFileStatement();
-	PrepareStatment(_db, _deleteFileStmt, "delete from FileStorage where name = ?");
+	PrepareStatment(_db, &_insertFileStmt, "INSERT INTO FileStorage (name, file) values (?, ?)");
+	PrepareStatment(_db, &_checkHasFileStmt, "select count(*) as n from FileStorage where name = ?");
+	PrepareStatment(_db, &_deleteFileStmt, "delete from FileStorage where name = ?");
 }
 
 SqliteFileStorage::~SqliteFileStorage() {
@@ -54,7 +54,6 @@ std::vector<string> SqliteFileStorage::GetFileNamesList() {
 	return result;
 }
 
-
 // --------------------------- private part ------------------------------------------
 void SqliteFileStorage::OpenDatabaseConnection() {
 	_rc = sqlite3_open(_db_name.c_str(), &_db);
@@ -74,21 +73,6 @@ void SqliteFileStorage::CreateTableIfNotExists() {
 
 void SqliteFileStorage::FinishWorkWithSqlite3() {
 	sqlite3_close(_db);
-}
-
-void SqliteFileStorage::PrepareInsertFileStatement() {
-	string sqlInsert = 
-		"INSERT INTO FileStorage (name, file) values (?, ?)";
-	sqlite3_prepare_v2(
-		_db, 
-		sqlInsert.c_str(), // (const char*)
-		sqlInsert.length(), // length of prepared SQL in BYTES
-		&_insertFileStmt, // OUT: (sqlite3_stmt **) prepared stmt
-		NULL // OUT: (const char**) pointer to unused portion of prepared sql string
-		);
-	if (_rc != SQLITE_OK) {
-		throw "Can't prepare insert file statement";
-	}
 }
 
 void SqliteFileStorage::BindNameToInsertFileStatement(const std::string &name ) {
@@ -124,20 +108,6 @@ void SqliteFileStorage::ExecuteInsertFileStatement() {
 		throw "Can't execute prepared insert statement";
 	}
 	sqlite3_reset(_insertFileStmt);
-}
-
-void SqliteFileStorage::PrepareCheckHasFileStatement() {
-	string sqlCheckFile = "select count(*) as n from FileStorage where name = ?";
-	sqlite3_prepare_v2(
-		_db, 
-		sqlCheckFile.c_str(), // (const char*)
-		sqlCheckFile.length(), // length of prepared SQL in BYTES
-		&_checkHasFileStmt, // OUT: (sqlite3_stmt **) prepared stmt
-		NULL // OUT: (const char**) pointer to unused portion of prepared sql string
-		);
-	if (_rc != SQLITE_OK) {
-		throw "Can't prepare check has file statement";
-	}
 }
 
 void SqliteFileStorage::BindNameToCheckHasFileStatement(const std::string &name ) {

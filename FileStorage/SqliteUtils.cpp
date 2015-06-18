@@ -130,12 +130,12 @@ void SqliteTestDB1Generator::GenerateDataToInsert() {
 	_dataToInsert["file3"] = blob3;
 }
 
-void SqliteUtils::PrepareStatment(sqlite3 *db, sqlite3_stmt* stmt, const std::string &sql) {
+void SqliteUtils::PrepareStatment(sqlite3 *db, sqlite3_stmt **stmt, const std::string &sql) {
 	int rc = sqlite3_prepare_v2(
 		db,
 		sql.c_str(),
 		sql.length(),
-		&stmt,
+		&(*stmt), // OUT-parameter: the pointer ITSELF is changed by sqlite
 		NULL
 		);
 	if (rc != SQLITE_OK) {
