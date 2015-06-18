@@ -20,7 +20,7 @@ SqliteFileStorage::SqliteFileStorage(std::string file_name) {
 void SqliteFileStorage::InitDatabase() {
 	OpenDatabaseConnection();
 	CreateTableIfNotExists();
-	PrepareStatment(_db, &_insertFileStmt, "INSERT INTO FileStorage (name, file) values (?, ?)");
+	PrepareStatment(_db, &_insertFileStmt, "insert into FileStorage (name, file) values (?, ?)");
 	PrepareStatment(_db, &_checkHasFileStmt, "select count(*) as n from FileStorage where name = ?");
 	PrepareStatment(_db, &_deleteFileStmt, "delete from FileStorage where name = ?");
 	PrepareStatment(_db, &_retreiveFileStmt, "select file from FileStorage where name = ?");
