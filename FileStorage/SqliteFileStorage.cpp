@@ -9,6 +9,7 @@
 #include "sqlite3.h"
 
 using SqliteUtils::PrepareStatment;
+using SqliteUtils::BindString;
 
 SqliteFileStorage::SqliteFileStorage(std::string file_name) {
 	_db_name = file_name;
@@ -30,13 +31,13 @@ SqliteFileStorage::~SqliteFileStorage() {
 void SqliteFileStorage::StoreFile(string name, string read_from) {
 	std::vector<char> chars;
 	FileUtils::ReadFileToVectorOfChars(read_from, &chars);
-	BindNameToInsertFileStatement(name);
+	BindString(_insertFileStmt, 1, name);
 	BindFileBlobToInsertFileStatement(chars);
 	ExecuteInsertFileStatement();
 }
 
 bool SqliteFileStorage::HasFile(string name) {
-	BindNameToCheckHasFileStatement(name);
+	BindString(_checkHasFileStmt, 1, name);
 	return ExecuteCheckHasFileStatement();
 }
 
@@ -75,20 +76,6 @@ void SqliteFileStorage::FinishWorkWithSqlite3() {
 	sqlite3_close(_db);
 }
 
-void SqliteFileStorage::BindNameToInsertFileStatement(const std::string &name ) {
-	_rc = sqlite3_bind_text(
-		_insertFileStmt, // (sqlite3_stmt*) statement to prepare
-		1, // (int) number of bind parameter
-		name.c_str(), // (const char*) binded text value
-		name.length(), // (int) size in BYTES
-		SQLITE_STATIC// ( void(*)(void*) ) destructor used to dispose text or blob
-		// SQLITE_STATIC - doesn't need to be freed
-		);
-	if (_rc != SQLITE_OK) {
-		throw "Can't bind text to insert statement";
-	}
-}
-
 void SqliteFileStorage::BindFileBlobToInsertFileStatement(const std::vector<char> &fb ) {
 	_rc = sqlite3_bind_blob(
 		_insertFileStmt, 
@@ -108,20 +95,6 @@ void SqliteFileStorage::ExecuteInsertFileStatement() {
 		throw "Can't execute prepared insert statement";
 	}
 	sqlite3_reset(_insertFileStmt);
-}
-
-void SqliteFileStorage::BindNameToCheckHasFileStatement(const std::string &name ) {
-	_rc = sqlite3_bind_text(
-		_checkHasFileStmt, // (sqlite3_stmt*) statement to prepare
-		1, // (int) number of bind parameter
-		name.c_str(), // (const char*) binded text value
-		name.length(), // (int) size in BYTES
-		SQLITE_STATIC// ( void(*)(void*) ) destructor used to dispose text or blob
-		// SQLITE_STATIC - doesn't need to be freed
-		);
-	if (_rc != SQLITE_OK) {
-		throw "Can't bind name to check has file statement";
-	}
 }
 
 bool SqliteFileStorage::ExecuteCheckHasFileStatement() {

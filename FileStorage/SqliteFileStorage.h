@@ -32,17 +32,13 @@ private:
 	void OpenDatabaseConnection();
 	void CreateTableIfNotExists();
 
-	void BindNameToInsertFileStatement(const std::string &name);
 	void BindFileBlobToInsertFileStatement(const std::vector<char> &fb);
 	void ExecuteInsertFileStatement();
 
-	void BindNameToDeleteFileStatement(const std::string &name);
 	void ExecuteDeleteFileStatement();
 
-	void BindNameToSelectFileStatement(const std::string &name);
 	void ExecuteSelectFileStatement();
 
-	void BindNameToCheckHasFileStatement(const std::string &name);
 	bool ExecuteCheckHasFileStatement();
 
 	void FinishWorkWithSqlite3();

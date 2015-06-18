@@ -9,7 +9,7 @@
 namespace SqliteUtils {
 
 	void PrepareStatment(sqlite3 *db, sqlite3_stmt **stmt, const std::string &sql);
-	void BindString(sqlite3_stmt *stmt, const int &param_number, std::string s);
+	void BindString(sqlite3_stmt *stmt, int param_number, const std::string &s);
 
 	class SqliteTestDB1Generator {
 	public:
