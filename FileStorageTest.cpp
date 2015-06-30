@@ -21,6 +21,7 @@
 #include "FileStorage\SqliteFileStorage.h"
 #include "FileStorage\FileUtils.h"
 #include "FileStorage\SqliteUtils.h"
+#include "FileStorage\VestaFileStorage.h"
 
 using std::string;
 using std::vector;
@@ -73,17 +74,20 @@ protected:
 	virtual void SetUp() {
 		string fs_impl = GetParam();
 		if(fs_impl == "Ram") {
-			fs = std::unique_ptr<FileStorage>(new RamFileStorage);
+			fs = std::make_unique<RamFileStorage>();
 		}
 		else if(fs_impl == "Sqlite") {
 			string test_db_path = kTempPath+"testSqliteFileStorage.db";
 			remove(test_db_path.c_str());
-			fs = std::unique_ptr<FileStorage>(new SqliteFileStorage(test_db_path));
+			fs = std::make_unique<SqliteFileStorage>(test_db_path);
+		}
+		else if (fs_impl == "Vesta") {
+			fs = std::make_unique<VestaFileStorage>();
 		}
 	}
 };
 
-const string fs_implementations[] = {"Ram", "Sqlite"};
+const string fs_implementations[] = {"Ram", "Sqlite", "Vesta"};
 INSTANTIATE_TEST_CASE_P(TestFileStorageImpls,
 												FileStorageTest,
 												::testing::ValuesIn(fs_implementations)
